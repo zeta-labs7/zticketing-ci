@@ -1,0 +1,43 @@
+name: CI ZTicketing Frontend
+
+on:
+  repository_dispatch:
+    types: [zticketing-ci-frontend]
+  workflow_dispatch:
+
+jobs:
+  checkout-test:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout the source code that triggered us (exact SHA)
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          repository: zeta-labs7/zticketing-ci
+          ref: development
+          path: source
+
+      - name: Source code Repository
+        run: |
+          echo "Source Repo : ${{ github.event.client_payload.source_repo }}"
+          echo "SHA         : ${{ github.event.client_payload.sha }}"
+          echo "Branch      : ${{ github.event.client_payload.ref }}"
+          echo "Actor       : ${{ github.event.client_payload.actor }}"
+
+     # 2. Checkout templates repository
+      - name: Checkout templates
+        uses: actions/checkout@v4
+        with:
+          repository: zeta-labs7/zeta-actions-templates
+          ref: develop
+          path: templates
+          
+
+     # 3. Now you have both side-by-side
+      - name: Show structure
+        run: |
+          ls -la
+          ls -la source/
+          ls -la templates/
+    
